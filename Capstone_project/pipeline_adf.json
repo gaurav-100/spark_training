@@ -1,0 +1,111 @@
+{
+    "name": "pipeline1",
+    "properties": {
+        "activities": [
+            {
+                "name": "mount",
+                "type": "DatabricksNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/gaurav.rana@tigeranalytics.com/mount"
+                },
+                "linkedServiceName": {
+                    "referenceName": "houseDB",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "ingest_data",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "mount",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/gaurav.rana@tigeranalytics.com/ingest_data"
+                },
+                "linkedServiceName": {
+                    "referenceName": "houseDB",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "train",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "ingest_data",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/gaurav.rana@tigeranalytics.com/train"
+                },
+                "linkedServiceName": {
+                    "referenceName": "houseDB",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "evaluate",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "train",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "notebookPath": "/Users/gaurav.rana@tigeranalytics.com/evaluate"
+                },
+                "linkedServiceName": {
+                    "referenceName": "houseDB",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2022-10-10T04:24:05Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
